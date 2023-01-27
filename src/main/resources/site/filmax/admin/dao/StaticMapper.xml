@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.filmax.admin.dao.StaticMapper">
+	<select id="selectCinemaType" resultType="site.filmax.admin.dto.CinemaTypeDTO">
+		select * from cinematype
+	</select>
+	<select id="countCinemaByCinemaTypeSeq" parameterType="int" resultType="int">
+		select count(*) from cinema where cinematype_id = #{cinemaTypeSeq}
+	</select>
+	<select id="sumAllpayByMonth" resultType="hashmap">
+		<![CDATA[
+			select distinct 
+			    to_char(reg, 'YYYY/MM') as year_month,
+			    sum(allpay) over(partition by to_char(reg, 'YYYY/MM')) as total_amount
+			    from(
+			        select * from gorder where reg >= #{startDate} and reg < #{endDate}
+			)gorder order by year_month
+		]]>
+	</select>
+	<select id="selectMovieTop5ByAllpay" resultType="hashmap">
+		<![CDATA[
+			select * from (    
+			    select moviesum.*, rownum r from (
+			        select moviesum.*, movie.title from movie, (
+			            select distinct 
+			                goods_seq movie_seq,
+			                sum(allpay) over(partition by goods_seq) as total_amount
+			                from(
+			                    select * from gorder where reg >= #{startDate} and reg < #{endDate}
+			            ) gorder 
+			        ) moviesum where moviesum.movie_seq = movie.movie_seq order by total_amount ${descOrNot}
+			    ) moviesum
+			) where r >= #{startRNum} and r <= #{endRNum}
+		]]>
+	</select>
+	<select id="sumThisMonthAllpay" parameterType="String" resultType="int">
+		<![CDATA[
+			select sum(allpay) from(
+	    		select * from gorder where reg >= #{sumMonthDay})
+	    ]]>
+	</select>
+	<select id="sumYearAllpay" resultType="int">
+		<![CDATA[
+			select sum(allpay) from(
+	    		select * from gorder where reg >= #{startDate} and reg < #{endDate})
+	    ]]>
+	</select>
+	<select id="countEmailNotAnswered" resultType="int">
+		select count(*) from emailcs where isanswered = 0
+	</select>
+	<select id="countGroupNotAnswered" resultType="int">
+		select count(*) from groupcs where isanswered = 0
+	</select>
+</mapper>

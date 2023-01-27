@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.filmax.admin.dao.CsMapper">
+	<!--                                                                          한씨 -->
+	<select id="selectEmailAllList" resultType="site.filmax.admin.dto.EmailCsDTO">
+		<![CDATA[
+			select * from (
+			    select emailcs.*, rownum r from (
+			        select * from (            
+			            select distinct emailcs.*, emailcs_type.name etypename from emailcs, emailcs_type where emailcs.etype = emailcs_type.num ${whereAnswered}
+			        ) emailcs order by emailcs_seq ${descOrNot}
+			    ) emailcs
+			) where r>=#{startNum} and r<=#{endNum}
+		]]>
+	</select>
+	<select id="countEmailAllList" resultType="int">
+		select count(*) from emailcs ${countWhere}
+	</select>
+	<select id="countEmailNotAnswered" resultType="int">
+		select count(*) from emailcs where isanswered = 0
+	</select>
+	<select id="searchDateEmailList" resultType="site.filmax.admin.dto.EmailCsDTO">
+		<![CDATA[
+			select * from (
+				    select emailcs.*, rownum r from (
+				        select * from (            
+				            select distinct emailcs.*, emailcs_type.name etypename from emailcs, emailcs_type where emailcs.etype = emailcs_type.num and reg >=#{startDate} and reg <#{endDate} 
+				        ) emailcs order by emailcs_seq
+				    ) emailcs
+				) where r>=#{startNum} and r<=#{endNum}
+		]]>
+	</select>
+	<select id="countDateEmailList" resultType="int">
+		<![CDATA[
+			select count(*) from emailcs where reg >=#{startDate} and reg <#{endDate}
+		]]>
+	</select>
+	<select id="searchEmailList" resultType="site.filmax.admin.dto.EmailCsDTO">
+		<![CDATA[
+			select * from (
+				    select emailcs.*, rownum r from (
+				        select * from (            
+				            select distinct emailcs.*, emailcs_type.name etypename from emailcs, emailcs_type where emailcs.etype = emailcs_type.num and emailcs.${cName} like '%'||#{cValue}||'%'
+				        ) emailcs order by emailcs_seq desc
+				    ) emailcs
+				) where r>=#{startNum} and r<=#{endNum}
+		]]>
+	</select>
+	<select id="countSearchEmailList" resultType="int">
+		select count(*) from emailcs where ${cName} like '%'||#{cValue}||'%'
+	</select>
+	<select id="readEmailBySeq" resultType="site.filmax.admin.dto.EmailCsDTO" parameterType="int">
+		select distinct emailcs.*, branch.branchname branchname from branch, (
+			select distinct emailcs.*, emailcs_type.name etypename from emailcs, emailcs_type where emailcs.etype = emailcs_type.num
+		) emailcs where emailcs.branch_seq = branch.branch_seq(+) and emailcs.emailcs_seq = ${num}
+	</select>
+	<select id="getEmailFilesBySeq" resultType="String" parameterType="int">
+		select files from emailcs where emailcs_seq=${num}
+	</select>
+	<insert id="insertEmailReply" parameterType="site.filmax.admin.dto.EreplyDTO">
+		insert into ereply(ereply_seq, emailcs_seq, writer, email, title, content)
+			values(ereply_seq.nextval, #{emailcs_seq}, #{writer}, #{email}, #{title}, #{content})
+	</insert>
+	<update id="updateEmailAnswered" parameterType="int">
+		update emailcs set isanswered = 1 where emailcs_seq = #{emailcs_seq}
+	</update>
+	<select id="readEreplyByEmailcsSeq" resultType="site.filmax.admin.dto.EreplyDTO" parameterType="int">
+		select * from ereply where emailcs_seq = #{emailcs_seq}
+	</select>
+	
+	<!-- groupcs -->
+	<select id="selectGroupAllList" resultType="site.filmax.admin.dto.GroupcsDTO">
+		<![CDATA[
+			select * from (
+			    select groupcs.*, rownum r from (
+			        select * from (            
+			            select groupcs.* , branch.branchname branchname from groupcs, branch where groupcs.branch = branch.branch_seq ${whereAnswered}
+			        ) groupcs order by groupcs_seq ${descOrNot}
+			    ) groupcs
+			) where r>=#{startNum} and r<=#{endNum}
+		]]>
+	</select>
+	<select id="countGroupAllList" resultType="int">
+		select count(*) from groupcs ${countWhere}
+	</select>
+	<select id="countGroupNotAnswered" resultType="int">
+		select count(*) from groupcs where isanswered = 0
+	</select>
+	<select id="searchDateGroupList" resultType="site.filmax.admin.dto.GroupcsDTO">
+		<![CDATA[
+			select * from (
+				    select groupcs.*, rownum r from (
+				        select * from (            
+				            select groupcs.* , branch.branchname branchname from groupcs, branch where groupcs.branch = branch.branch_seq and reg >=#{startDate} and reg <#{endDate} 
+				        ) groupcs order by groupcs_seq
+				    ) groupcs
+				) where r>=#{startNum} and r<=#{endNum}
+		]]>
+	</select>
+	<select id="countDateGroupList" resultType="int">
+		<![CDATA[
+			select count(*) from groupcs where reg >=#{startDate} and reg <#{endDate}
+		]]>
+	</select>
+	<select id="searchGroupList" resultType="site.filmax.admin.dto.GroupcsDTO">
+		<![CDATA[
+			select * from (
+				    select groupcs.*, rownum r from (
+				        select * from (            
+				            select groupcs.* , branch.branchname branchname from groupcs, branch where groupcs.branch = branch.branch_seq and groupcs.${cName} like '%'||#{cValue}||'%'
+				        ) groupcs order by groupcs_seq desc
+				    ) groupcs
+				) where r>=#{startNum} and r<=#{endNum}
+		]]>
+	</select>
+	<select id="countSearchGroupList" resultType="int">
+		select count(*) from groupcs where ${cName} like '%'||#{cValue}||'%'
+	</select>
+	<select id="readGroupBySeq" resultType="site.filmax.admin.dto.GroupcsDTO" parameterType="int">
+		select groupcs.* , branch.branchname branchname, cinematype.typename cinematypename from groupcs, branch, cinematype where groupcs.branch = branch.branch_seq and groupcs.cinematype = cinematype.cinematype_seq and groupcs.groupcs_seq = ${num}
+	</select>
+	<insert id="insertGroupReply" parameterType="site.filmax.admin.dto.GreplyDTO">
+		insert into greply(greply_seq, groupcs_seq, writer, email, title, content)
+			values(greply_seq.nextval, #{groupcs_seq}, #{writer}, #{email}, #{title}, #{content})
+	</insert>
+	<update id="updateGroupAnswered" parameterType="int">
+		update groupcs set isanswered = 1 where groupcs_seq = #{groupcs_seq}
+	</update>
+	<select id="readGreplyByGroupcsSeq" resultType="site.filmax.admin.dto.GreplyDTO" parameterType="int">
+		select * from greply where groupcs_seq = #{groupcs_seq}
+	</select>
+	<!--                                                                                               조씨 -->
+	<select id="faqAllList" resultType="site.filmax.admin.dto.FaqDTO">
+		<![CDATA[
+			select * from (
+				select faq.*,rownum r from (
+					select * from(
+						select distinct faq.*,faq_type.name typename from faq, faq_type where faq.type = faq_type.num(+)
+					)faq order by faq_seq
+				)faq
+			)where r>=#{startNum} and r<=#{endNum} 
+		]]>
+	</select>
+	
+	<select id="countFaqList" resultType="int">
+		select count(*) from faq
+	</select>
+	
+	<insert id="faqinsert" parameterType="site.filmax.admin.dto.FaqDTO">
+		insert into faq(faq_seq,type,title,content,writer) 
+			values(faq_seq.nextval,#{type},#{title},#{content},#{writer})
+	</insert>
+	
+	<select id="faqtype" resultType="site.filmax.admin.dto.FaqTypeDTO">
+		select * from faq_type
+	</select>
+	
+	<select id="faqReadNum" parameterType="int" resultType="site.filmax.admin.dto.FaqDTO">
+		select distinct faq.*, faq_type.name typename from faq, faq_type where faq.type = faq_type.num and faq_seq=#{num}	
+	</select>
+	
+	<delete id="faqDelete" parameterType="int">
+		delete from faq where faq_seq=#{num}
+	</delete>
+	
+	<update id="faqUpdate" parameterType="site.filmax.admin.dto.FaqDTO">
+		update faq set title=#{title},type=#{type},content=#{content},writer=#{writer} where faq_seq=#{faq_seq}
+	</update>
+	
+	<select id="newsAllList" resultType="site.filmax.admin.dto.NewsDTO">
+		<![CDATA[
+			select * from (
+				select news.*,rownum r from (
+					select * from(
+						select distinct news.*,news_type.name typename from news, news_type where news.type = news_type.num 
+					)news order by news_seq
+				)news
+			)where r>=#{startNum} and r<=#{endNum} 
+		]]>
+	</select>
+	
+	<select id="countNewsList" resultType="int">
+		select count(*) from news
+	</select>
+	
+	<insert id="newsinsert" parameterType="site.filmax.admin.dto.NewsDTO">
+		insert into news(news_seq,type,title,content,writer)
+			values(news_seq.nextval,#{type},#{title},#{content},#{writer})
+	</insert>
+	
+	<select id="newstype" resultType="site.filmax.admin.dto.NewsTypeDTO">
+		select * from news_type
+	</select>
+	
+	<select id="newsReadNum" parameterType="int" resultType="site.filmax.admin.dto.NewsDTO">
+		select distinct news.*, news_type.name typename from news, news_type where news.type = news_type.num and news_seq=#{num}
+	</select>
+	
+	<delete id="newsDelete" parameterType="int">
+		delete from news where news_seq=#{num}
+	</delete>
+	
+	<update id="newsUpdate" parameterType="site.filmax.admin.dto.NewsDTO">
+		update news set title=#{title},type=#{type},content=#{content},writer=#{writer} where news_seq=#{news_seq}
+	</update>
+	
+	<select id="admin_findDate" resultType="site.filmax.admin.dto.NewsDTO"> 
+	<![CDATA[
+		select readcount from news where rownum <=5 order by readcount desc;
+	]]>
+	</select>
+</mapper>
