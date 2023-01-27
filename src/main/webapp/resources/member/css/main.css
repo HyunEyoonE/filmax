@@ -1,0 +1,56 @@
+@charset "UTF-8";
+	div#main {
+		width: 100%;
+		text-align: left;
+		min-height: 300px;
+		margin: 0 auto;
+	}
+	header, footer, nav, aside, section {
+		border: 1px solid #999;
+		margin: 5px;
+		padding: 10px;
+	}
+	header {
+		height: 50px;
+		/*background-color: red;*/
+	}
+	nav, section, aside {
+		float: left;
+		height: 1500px;
+	}
+	nav {
+		align: right;
+		width: 220px;
+	}
+	section {	
+		width: 500px;
+	}
+	aside {
+		width: 220px; 
+	}
+	footer {
+		height: 50px;
+		position: relatiev;
+		clear: both;
+	}
+	article {
+		width: 100%;
+	}
+	.memberMainHome{
+		width:200px;
+		height:40px;
+		background-color:#FE2E2E;
+		float:clear;
+		padding:10px;
+		color: #FFFFFF;
+		font-size:1.2em;
+	}
+	.memberMainMenu{
+		width:200px;
+		height:40px;
+		background-color:#FFFFFF;
+		float:clear;
+		padding:10px;
+		color: #1C1C1C;
+		font-size:1.2em;
+	}

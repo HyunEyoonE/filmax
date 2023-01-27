@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="site.filmax.dao.PayMapper">
+	<insert id="insertBiller" >
+		insert into biller values(biller_seq.nextval, 0, #{movie_seq},#{user_id}, #{coupon_id}, #{usingPoint},#{amount}, sysdate)
+	</insert>	
+	
+	<!-- 내쿠폰함 -->
+	<select id="myCouponList" resultType="site.filmax.dto.CouponDTO" parameterType="String">
+	select c.num, t.name, t.info, t.sale, c.use, c.usetime from coupon c, coupon_type t
+			where c.type = t.type and user_id=#{user_id} and use='n'
+	</select>
+	<!-- 사용가능한 쿠폰 -->
+	<select id="GoderCoupon" resultType="site.filmax.dto.CouponDTO" parameterType="String">
+		select c.num, t.name, t.info, t.sale, c.use, c.usetime from coupon c, coupon_type t
+			 where c.type = t.type and user_id=#{user_id} and use='n' and <![CDATA[ TO_CHAR(SYSDATE, 'yyyy/MM/dd') <= TO_CHAR(usetime, 'yyyy/MM/dd')]]>
+	</select>
+	
+	<!-- 내포인트 표시 / 아이디의 마지막행 최종포인트 -->
+    <select id="pointCount" resultType="int" parameterType="String">
+    	select nvl(avg(totalpoint),0) totalpoint from(select * from point order by rownum desc) where user_id=#{user_id} and rownum=1
+    </select>
+    
+   	<insert id="minusPoint">
+		insert into point values(point_seq.nextval, 5, #{user_id}, 0, #{usingPoint},
+   		(select totalpoint from(select * from point order by rownum desc) where user_id=#{user_id} and rownum=1) + 0 - #{usingPoint},
+   			sysdate)
+	</insert>
+	
+	<update id="updateCoupon">
+		update coupon set use = 'y' where user_id=#{user_id} and num=#{coupon_type}
+	</update>
+</mapper>

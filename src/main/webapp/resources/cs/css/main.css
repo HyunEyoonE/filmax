@@ -1,0 +1,38 @@
+@charset "UTF-8";
+	.csMainMenuHome{
+		width:200px;
+		height:40px;
+		background-color:#e53637;
+		float:clear;
+		padding:10px;
+		color: #FFFFFF;
+		font-size:1.2em;
+	}
+	.csMainMenu{
+		width:200px;
+		height:40px;
+		background-color:#FFFFFF;
+		float:clear;
+		padding:10px;
+		color: #1C1C1C;
+		font-size:1.2em;
+	}
+	.filmaxCsSidebarBox {
+		height: 100%;
+	}
+	.filmaxCsBodyContainer {
+		overflow: hidden;
+		min-height: 80vh;
+	}
+	.faqcard	{
+		height: 80px;
+		width: 170px;
+		border-style: solid;
+		border-color: #e53637;
+		border-radius: 10px;
+		padding: 15px;
+		margin: 10px;
+	}
+	a{
+		text-decoration-line: none;
+	}

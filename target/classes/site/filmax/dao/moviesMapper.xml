@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="site.filmax.dao.moviesMapper">
+	<select id="moviesList" resultType="site.filmax.dto.MoviesDTO">	
+		select distinct m.*,p.poster, p.levels from movie m, poster p where m.movie_seq = p.movie_seq(+) and p.levels = 1
+	</select>
+	<select id="onScreen" resultType="site.filmax.dto.MoviesDTO">		<!-- 상영중인 영화설정 -->
+		select * from (select distinct m.*,p.poster, p.levels from movie m, poster p where m.movie_seq = p.movie_seq(+) and p.levels = 1) 
+				where releasedate between trunc(sysdate) - 30 and trunc(sysdate)
+	</select>
+	
+	<select id="movieDetail" resultType="site.filmax.dto.MoviesDTO">
+		select * from movie where movie_seq=#{movie_seq}
+	</select>
+	
+	<select id="subtitle" resultType="String">
+		select subtitle from subtitle where subtitle_id=#{subtitle_id}
+	</select>
+	<select id="ageLimit" resultType="int">
+		select age from ageLimit where ageLimit_id=#{ageLimit_id}
+	</select>
+	<select id="screening" resultType="String">
+		select status from screening where screening_id=#{screening_id}
+	</select>
+	<select id="genre" resultType="String">
+		select genre from genre where genre_id=#{genre_id}
+	</select>
+	
+	<select id="country" resultType="String">
+		select country from country where country_id=#{country_id}
+	</select>
+	
+	<select id="posterMain" resultType="site.filmax.dto.posterDTO">
+		select * from poster where movie_seq=#{movie_seq} and levels=1
+	</select>
+	<select id="posterSub" resultType="site.filmax.dto.posterDTO">
+		select * from poster where movie_seq=#{movie_seq} and levels=2
+	</select>
+	<select id="posterStill" resultType="site.filmax.dto.posterDTO">
+		select * from poster where movie_seq=#{movie_seq} and levels=3
+	</select>
+
+	<insert id="inputReview" parameterType="site.filmax.dto.reviewDTO">
+		insert into reviews values(reviews_seq.nextval,#{movie_seq},#{user_id},sysdate,#{content},0)
+	</insert>
+	<select id="review" resultType="site.filmax.dto.reviewDTO" >
+		select * from reviews where movie_seq = #{movie_seq}
+	</select>
+	
+	<update id="reviewUpdate" parameterType="site.filmax.dto.reviewDTO">
+		update reviews set content=#{content} where reviews_seq = #{reviews_seq}
+	</update>
+	<delete id="reviewDelete" parameterType="int">
+		delete from reviews where reviews_seq = #{reviews_seq}
+	</delete>
+	
+	<select id="totalReview" resultType="int">
+		select count(*) from reviews where movie_seq=#{movie_seq}
+	</select>
+	<select id="reviewPaging" resultType="site.filmax.dto.reviewDTO">
+		<![CDATA[	
+		select * from (
+   			select rownum as rn ,a.*,b.count from reviews a ,(select  r.reviews_seq , count(l.reviews_seq) count from reviews r , 
+   				(select * from review_like where user_id=#{user_id} ) l where  r.reviews_seq = l.reviews_seq(+) group by r.reviews_seq) b 
+           		 	where a.reviews_seq = b.reviews_seq and a.movie_seq=#{movie_seq} )where rn >= #{start} and rn <= #{end}
+		]]>		 <!-- 좋아요 테이블과 리뷰 테이블의 review_seq 를   -->
+	</select>
+	<select id="reviewPaging2" resultType="site.filmax.dto.reviewDTO">
+		<![CDATA[	
+		select * from (
+   			select rownum as rn ,a.*,b.count from reviews a ,(select  r.reviews_seq , count(l.reviews_seq) count from reviews r , 
+   				(select * from review_like ) l where  r.reviews_seq = l.reviews_seq(+) group by r.reviews_seq) b 
+           		 	where a.reviews_seq = b.reviews_seq and a.movie_seq=#{movie_seq} )where rn >= #{start} and rn <= #{end}
+		]]>
+	</select>
+	<update id="ratingUp" parameterType="site.filmax.dto.reviewLikeDTO">
+		update reviews set rating=rating+1 where reviews_seq=#{reviews_seq}
+	</update>
+	
+	<update id="ratingDown" parameterType="site.filmax.dto.reviewLikeDTO">
+		update reviews set rating=rating-1 where reviews_seq=#{reviews_seq}
+		
+	</update>
+	
+	<select id="likeCheck" resultType = "int" parameterType="site.filmax.dto.reviewLikeDTO">
+		select count(*) from review_like where user_id=#{user_id} and movie_seq=#{movie_seq} and reviews_seq = #{reviews_seq}
+	</select>
+	<insert id="likeInsert" parameterType="site.filmax.dto.reviewLikeDTO">
+		insert into review_like values(review_like_seq.nextval,#{movie_seq},#{user_id},#{reviews_seq})
+	</insert>
+	<delete id="likeDelete" parameterType="site.filmax.dto.reviewLikeDTO">
+		delete from review_like where movie_seq = #{movie_seq} and user_id = #{user_id} and reviews_seq=#{reviews_seq}
+	</delete>
+	 
+</mapper>

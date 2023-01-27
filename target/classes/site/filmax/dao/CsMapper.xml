@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="site.filmax.dao.CsMapper">
+	<!-- 수영 -->
+	<select id="selectNewsMain" parameterType="site.filmax.dto.NewsDTO" resultType="site.filmax.dto.NewsDTO">
+		<![CDATA[
+			select * from (
+				select news.* , rownum r from (
+					select * from (
+						select distinct news.*, news_type.name typename from news, news_type where news.type = news_type.num
+					) news order by news_seq desc
+				) news
+			) where r>=#{startNum} and r<=#{endNum}
+		]]>
+	</select>
+	<select id="selectEmailCsTypeList" resultType="site.filmax.dto.EmailCsTypeDTO">
+		select * from emailcs_type
+	</select>
+	<insert id="insertEmailCs" parameterType="site.filmax.dto.EmailCsDTO">
+		insert into emailcs(emailcs_seq,name,phone,email,etype,thchoice,region,branch_seq,title,content)
+			values(emailcs_seq.nextval,#{name},#{phone},#{email},#{etype},#{thchoice},#{region},#{branch_seq},#{title},#{content})
+		<selectKey keyProperty="emailcs_seq" resultType="int" order="AFTER">
+			select emailcs_seq.CURRVAL from dual
+		</selectKey>
+	</insert>
+	<update id="updateEmailCsFile" parameterType="site.filmax.dto.EmailCsDTO">
+		update emailcs set files=#{files} where emailcs_seq=#{emailcs_seq}
+	</update>
+	<insert id="insertGroupcs" parameterType="site.filmax.dto.GroupcsDTO">
+		insert into groupcs(groupcs_seq,cinematype,region,branch,wantdate,wanttime,countpeople,content,csname,phone,email,isagree)
+			values(groupcs_seq.nextval,#{cinematype},#{region},#{branch},#{wantdate},#{wanttime},#{countpeople},#{content},#{csname},#{phone},#{email},#{isagree})
+	</insert>
+	<select id="selectRegionList" resultType="String">
+		select distinct region from branch
+	</select>
+	<select id="getBranchByRegion" parameterType="String" resultType="site.filmax.dto.BranchDTO">
+		select * from branch where region=#{region}
+	</select>
+	<select id="getCinemaTypeList" resultType="site.filmax.dto.CinemaTypeDTO">
+		select * from cinematype
+	</select>
+	<select id="getRegionByCinemaType" parameterType="int" resultType="String">
+		select distinct region from(
+			select distinct cinema.*, branch.region region from cinema, branch where cinema.branch_id = branch.branch_seq and cinema.cinematype_id = #{cinematype})
+	</select>
+	<select id="getBranchByCinemaTypeRegion" parameterType="Map" resultType="HashMap">
+		select distinct branch_id, branchname from(
+			select distinct cinema.*, branch.region region, branch.branchname from cinema, branch where cinema.branch_id = branch.branch_seq and cinema.cinematype_id = #{cinematype}
+		)where region=#{region}
+	</select>
+	<select id="getMemberDTOById" parameterType="String" resultType="site.filmax.dto.MemberDTO">
+		select * from member where user_id = #{id}
+	</select>
+	
+	<!-- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%현태%%%%%%%%%%%%%%%%%%%%%%%% -->
+	<!-- 전체 리스트 보여주기 -->
+	<select id="allList" resultType="site.filmax.dto.NewsDTO">
+		select * from news
+	</select>
+	
+	<!-- 조회수 올리기 -->
+	<update id="readCount" parameterType="int">
+		update news set readcount = readcount+1 where news_seq = #{num}
+	</update>
+	
+	<select id="NewsReadNum" resultType="site.filmax.dto.NewsDTO" parameterType="int">
+ 		select distinct news.*, news_type.name typename from news, news_type where news.type = news_type.num and news_seq=#{num}
+ 	</select>
+ 	<select id="selectNews" parameterType="site.filmax.dto.NewsDTO" resultType="site.filmax.dto.NewsDTO">
+		<![CDATA[
+			select * from (
+				select news.* , rownum r from (
+					select * from (
+						select distinct news.*, news_type.name typename from news, news_type where news.type = news_type.num
+					) news order by news_seq desc
+				) news
+			) where r>=#{startNum} and r<=#{endNum}
+		]]>
+	</select>
+ 	
+ 	<select id="getNewsList" resultType="site.filmax.dto.NewsDTO" parameterType="site.filmax.dto.NewsDTO">
+ 		<![CDATA[
+			select * from (
+				select news.* , rownum r from (
+					select * from (
+						select distinct news.*, news_type.name typename from news, news_type where news.type = news_type.num 
+					) news order by news_seq desc
+				) news
+			) where r>=#{startNum} and r<=#{endNum}
+		]]>
+ 	</select>
+ 	
+ 	<select id="newsCount" resultType="int">
+ 		select count(*) from news
+ 	</select>
+ 	
+ 	<select id="newsCount2" resultType="int" parameterType="int">
+ 		select count(*) from news where type =#{type}
+ 	</select>
+ 	
+ 	<select id="Newstype" resultType="site.filmax.dto.NewsTypeDTO">
+ 		select * from news_type
+ 	</select>
+ 	
+ 	<select id="Newstype1" resultType="site.filmax.dto.NewsDTO" parameterType="site.filmax.dto.NewsDTO">
+ 		<![CDATA[
+			select * from (
+				select news.* , rownum r from (
+					select * from (
+						select distinct news.*, news_type.name typename from news, news_type where news.type = news_type.num and news.type=#{type}
+					) news order by news_seq desc
+				) news
+			) where r>=#{startNum} and r<=#{endNum}
+		]]>
+ 	</select>
+ 	
+ 	<select id="searchList" resultType="site.filmax.dto.NewsDTO" parameterType="site.filmax.dto.NewsDTO">
+ 		<![CDATA[
+ 			select * from (
+ 				select news.* , rownum r from (
+ 					select distinct news.*, news_type.name typename from news, news_type where news.type = news_type.num
+ 				)news where ${search} like '%'||#{searchValue}||'%' order by news_seq desc
+ 			) where r>=#{startNum} and r<=#{endNum}
+ 		]]>
+ 	</select>
+ 	<select id ="searchcount" resultType="int">
+ 		select count(*) from (select * from news where ${search} like '%'||#{searchValue}||'%')
+ 	</select>
+ 	
+ 	<!-- 여기부터 자주 찾는 질문 -->
+ 	<select id="faqAllList" resultType="site.filmax.dto.FaqDTO">
+ 		select * from faq
+ 	</select>
+ 	
+ 	<update id="faqReadCount" parameterType="int">
+		update faq set readcount = readcount+1 where faq_seq = #{num}
+	</update>
+	
+	<select id="faqlist" resultType="site.filmax.dto.FaqDTO" parameterType="site.filmax.dto.FaqDTO">
+		<![CDATA[
+			select * from (
+				select faq.* , rownum r from (
+					select * from (
+						select distinct faq.*, faq_type.name typename from faq, faq_type where faq.type = faq_type.num 
+					) faq order by faq_seq desc
+				) faq
+			) where r>=#{startNum} and r<=#{endNum}
+		]]>
+	</select>
+	<select id="faqtype" resultType="site.filmax.dto.FaqTypeDTO">
+ 		select * from faq_type
+ 	</select>
+	<select id="faqtype1" resultType="site.filmax.dto.FaqDTO" parameterType="site.filmax.dto.FaqDTO">
+ 		<![CDATA[
+			select * from (
+				select faq.* , rownum r from (
+					select * from (
+						select distinct faq.*, faq_type.name typename from faq, faq_type where faq.type = faq_type.num and faq.type=#{type}
+					) faq order by faq_seq desc
+				) faq
+			) where r>=#{startNum} and r<=#{endNum}
+		]]>
+ 	</select>
+ 	<select id="faqCount" resultType="int">
+ 		select count(*) from faq
+ 	</select>
+ 	<select id="faqCount2" resultType="int" parameterType="int">
+ 		select count(*) from faq where type =#{type}
+ 	</select>
+ 	<select id="faqReadNum" resultType="site.filmax.dto.FaqDTO" parameterType="int">
+ 		select distinct faq.*, faq_type.name typename from faq, faq_type where faq.type = faq_type.num and faq_seq=#{num}
+ 	</select>
+ 	<select id ="faqsearchcount" resultType="int">
+ 		select count(*) from (select * from faq where ${search} like '%'||#{searchValue}||'%')
+ 	</select>
+ 	<select id="faqsearchList" resultType="site.filmax.dto.FaqDTO" >
+ 		<![CDATA[
+ 			select * from (
+ 				select faq.* , rownum r from (
+ 					select distinct faq.*, faq_type.name typename from faq, faq_type where faq.type = faq_type.num
+ 				)faq where ${search} like '%'||#{searchValue}||'%' order by faq_seq desc
+ 			) where r>=#{startNum} and r<=#{endNum}
+ 		]]>
+ 	</select>
+</mapper>
+

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="site.filmax.dao.CinemaMapper">
+	<select id="readBranch" resultType="site.filmax.dto.BranchDTO">
+		select * from branch
+	</select>	
+
+	<select id="readBranchAddress" resultType="String">
+		select address from branch where branch_seq=#{branch_seq}
+	</select>
+	
+	<select id="readClickedBranch" resultType="site.filmax.dto.BranchDTO">
+		select branch_seq, branchname from 
+			(select * from branch where branch_seq in
+				(select branch_id from timetable where movie_id=#{movie_seq})) 
+			where region=#{regionName}
+	</select>
+	
+	<select id="readMovies" resultType="site.filmax.dto.MoviesDTO">
+		select * from movie
+	</select>
+	<select id="readRegion" resultType="site.filmax.dto.BranchDTO">
+		select region, count(*) as num from branch group by region
+	</select>
+	
+	<select id="readSelectedRegion" resultType="site.filmax.dto.BranchDTO">
+		(select region, count(*) as num from branch where branch_seq in 
+			(select branch_id from timetable where movie_id=#{movieId} group by branch_id) group by region)
+	</select>
+	
+	<select id="readTimeTable" resultType="site.filmax.dto.TimeTableDTO">
+		select screendate from 
+			(select timetable_seq, to_char(screendate, 'YYYY-MM-DD') as screendate , to_char(screentime, 'HH24:MI') as screentime 
+				from timetable 
+					where movie_id=#{movie_seq} and branch_id=#{branch_seq})
+			group by screendate
+	</select>
+	
+	<select id="readDate" resultType="site.filmax.dto.TimeTableDTO">
+		select timetable_seq, branch_id, cinema_id, to_char(screendate, 'YYYY-MM-DD') as screendate , to_char(screentime, 'HH24:MI') as screentime 
+			from timetable 
+			where movie_id=#{movie_seq} and branch_id=#{branch_seq} and screendate=#{date}
+	</select>
+	
+	<select id="readCinema" resultType="site.filmax.dto.TimeTableDTO">
+		select * from timetable 
+			where movie_id=#{movie_seq} and branch_id=#{branch_seq} and screendate=to_date(#{date}, 'YYYY-MM-DD') 
+				and screentime=to_date(#{time}, 'HH24:MI')
+	</select>
+	
+	<select id="readClickedCinema" resultType="site.filmax.dto.CinemaDTO">
+		select * from cinema where cinema_seq in 
+			(select cinema_id from timetable 
+				where movie_id=#{movie_seq} and branch_id=#{branch_seq} and screendate=to_date(#{date}, 'YYYY-MM-DD') and screentime=to_date(#{time}, 'HH24:MI'))
+	</select>
+	
+	<select id="readCinemaType" resultType="site.filmax.dto.CinemaTypeDTO">
+		select * from cinemaType where cinematype_seq=#{cinemaTypeId}
+	</select>
+	
+	<select id="readSeat" resultType="site.filmax.dto.SeatDTO">
+		select * from seat where cinema_id in (select cinema_id from timetable where timetable_seq=#{timetableId})
+	</select>
+	
+	<select id="readSelectedTimetable" resultType="site.filmax.dto.TimeTableDTO">
+		select * from timetable where timetable_seq=#{timetableId}
+	</select>
+	
+	<select id="readSelectedMovie" resultType="site.filmax.dto.MoviesDTO">
+		select * from movie where movie_seq=#{movieId}
+	</select>
+	
+	<select id="readSelectedBranch" resultType="site.filmax.dto.BranchDTO">
+		select * from branch where branch_seq=#{branchId}
+	</select>
+	
+	<select id="readSelectedCinema" resultType="site.filmax.dto.CinemaDTO">
+		select * from cinema where cinema_seq=#{cinemaId}
+	</select>
+	
+	<select id="readSelectedDateTime" resultType="site.filmax.dto.TimeTableDTO">
+		select to_char(screendate, 'YYYY-MM-DD') as screendate, to_char(screentime, 'HH24:MI') as screentime from timetable where timetable_seq=#{timetableId}
+	</select>
+	
+	
+	<select id="readSeatPrice" resultType="site.filmax.dto.SeatDTO">
+		select seat_seq, seatname, price from
+			(select * from seat l join seattype r on l.seattype_id=r.seattype_seq) where seat_seq in
+		<foreach collection="array" open="(" close=")" separator="," item="seat">
+			#{seat}
+		</foreach>
+	</select>
+	<select id="readSeatPriceSum" resultType="int">
+		select sum(price) from
+			(select * from seat l join seattype r on l.seattype_id=r.seattype_seq) where seat_seq in
+		<foreach collection="array" open="(" close=")" separator="," item="seat">
+			#{seat}
+		</foreach>
+	</select>
+</mapper>
+
+
+
+
+
