@@ -34,18 +34,31 @@ Lombok, HikariCP, log4j2, Jackson, json, spring-secure,  commons-email, tiles, L
 <h1 align="center">⚙구현기능</h1>
 <h3>클라이언트</h3>
 - 🔐 인증
+
     - 로그인
+
     - 회원가입
+
     - 개인정보 수정
+
     - 유효성 검사
+
 - 🎬 영화 서비스
+
     - 예매
+
     - 영화 목록 및 정보
+
     - 리뷰 / 좋아요
+
 - 📝 고객센터
+
     - 공지 / 뉴스
+
     - FAQ
+
     - 문의
+
     - 상담톡
 
 <h3>관리자</h3>
