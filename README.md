@@ -9,4 +9,6 @@
 <div align="center">
 <h1>🎬개요</h1>
 </div>
+filmax 는 영화 예매 사이트 및 관리자 페이지 입니다
 
+<img width="100%" src="https://user-images.githubusercontent.com/105622328/215426705-96a7fc2b-09db-406b-9753-de35a4698408.png"/>
