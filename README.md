@@ -4,4 +4,4 @@
 ### 팀구성
 팀원 : 조현태 한수여 김인걸 김가영 이민찬 구교웅
 --------------------------------------------
-<img width="80%" src="![깃허브 대표 이미지](https://user-images.githubusercontent.com/105622328/215417292-e7a7b803-410b-47cf-8c7e-187a2200e3c6.png)"/>
+<img width="80%" src="https://user-images.githubusercontent.com/105622328/215417292-e7a7b803-410b-47cf-8c7e-187a2200e3c6.png"/>
