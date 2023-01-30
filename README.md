@@ -7,6 +7,6 @@
 --------------------------------------------
 <img width="100%" src="https://user-images.githubusercontent.com/105622328/215417292-e7a7b803-410b-47cf-8c7e-187a2200e3c6.png"/>
 <div align="center">
-<img width="10%" src="https://img.shields.io/badge/-EE4C2C?style=flat-square&logo=niconico&logoColor=black"/> <h1>개요</h1>
+<h1>🎬개요</h1>
 </div>
 
