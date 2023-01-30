@@ -31,5 +31,37 @@ Java, MyBatis, HTML5, CSS, JavaScript(Jquery), Bootstrap3
 <h3>API&Libraries</h3>
 Lombok, HikariCP, log4j2, Jackson, json, spring-secure,  commons-email, tiles, Landbot, naver-login, kakao-pay
 
+<h1 align="center">⚙구현기능</h1>
+<h3>클라이언트</h3>
+- 🔐 인증
+    - 로그인
+    - 회원가입
+    - 개인정보 수정
+    - 유효성 검사
+- 🎬 영화 서비스
+    - 예매
+    - 영화 목록 및 정보
+    - 리뷰 / 좋아요
+- 📝 고객센터
+    - 공지 / 뉴스
+    - FAQ
+    - 문의
+    - 상담톡
+
+<h3>관리자</h3>
+- 📊 전체 대시보드
+- 🔐 인증
+    - 로그인
+    - 회원가입
+    - 개인정보 수정
+    - 유효성 검사
+- 🎬 영화 서비스
+    - 영화 등록 및 수정
+    - 리뷰 삭제
+- 📝 고객센터
+    - 고객센터 대시보드
+    - 공지 / 뉴스 등록 및 수정
+    - FAQ 등록 및 수정
+    - 문의 확인 및 답변
 
 <img width="100%" src="https://user-images.githubusercontent.com/105622328/215426705-96a7fc2b-09db-406b-9753-de35a4698408.png"/>
