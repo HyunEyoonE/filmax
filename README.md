@@ -17,8 +17,19 @@ FILMAX 는 영화 예매 사이트 및 관리자 페이지 입니다.
 
 FILMAX를 통해 영화 관람을 즐겨보세요~🍿
 
---------------------------------------------
-
 <h1 align="center">⚙개발환경</h1>
+
+<h3>개발 환경</h3>
+Eclipse, JDK 11.0.14, Apache-Tomcat 9.0, Apache-Maven 4.0.0, JSP, PhotoShop
+
+<h3>데이터 베이스</h3>
+Oracle Sql Developer 21c
+
+<h3>사용 언어</h3>
+Java, MyBatis, HTML5, CSS, JavaScript(Jquery), Bootstrap3
+
+<h3>API&Libraries</h3>
+Lombok, HikariCP, log4j2, Jackson, json, spring-secure,  commons-email, tiles, Landbot, naver-login, kakao-pay
+
 
 <img width="100%" src="https://user-images.githubusercontent.com/105622328/215426705-96a7fc2b-09db-406b-9753-de35a4698408.png"/>
