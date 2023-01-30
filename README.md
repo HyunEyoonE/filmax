@@ -19,4 +19,6 @@ FILMAX를 통해 영화 관람을 즐겨보세요~🍿
 
 --------------------------------------------
 
+<h1 align="center">⚙개발환경</h1>
+
 <img width="100%" src="https://user-images.githubusercontent.com/105622328/215426705-96a7fc2b-09db-406b-9753-de35a4698408.png"/>
